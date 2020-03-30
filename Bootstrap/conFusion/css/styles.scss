@@ -71,3 +71,20 @@ body{
     bottom: 0px;
     z-index: 1;
 }
+
+@mixin modal-header{
+    background: $background-dark;
+    color:floralwhite;
+}
+
+.modal-header{
+    @include modal-header;
+}
+
+.modal-body {
+    background: $background-pale;
+}
+
+.close{
+    @include modal-header;
+}
