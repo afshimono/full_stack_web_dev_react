@@ -23,12 +23,12 @@ class DishDetail extends Component{
     }
 
     renderComments(comments){
-        if(comments.length === 0){
+        if(typeof comments === undefined){
             return(
                 <div></div>
             );
         }
-        else{
+        else if(comments){
             const commentArray = comments.map((comment) => {
                 const dateObj = new Date(Date.parse(comment.date));
                 return(
@@ -51,7 +51,7 @@ class DishDetail extends Component{
 
     render(){
         const dish = this.props.dish;
-        if (dish != null)
+        if (dish)
             return(
                 <div className="row">
                     <div  className="col-12 col-md-5 m-1">
@@ -62,7 +62,7 @@ class DishDetail extends Component{
             );
         else
             return(
-                <div></div>
+                <div className="row"></div>
             );
     }
 }
