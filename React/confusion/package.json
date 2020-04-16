@@ -34,6 +34,7 @@
   "devDependencies": {
     "bootstrap": "^4.4.1",
     "react-popper": "^2.1.0",
-    "reactstrap": "^8.4.1"
+    "reactstrap": "^8.4.1",
+    "bootstrap-social": "^5.1.0"
   }
 }
