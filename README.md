@@ -14,3 +14,11 @@ Project folder is Boostrap/conFusion.
 
 # React
 Project folder is React/confusion.
+
+You will need to install json-server globally via npm to get the project working properly. You can do so by typing:
+` npm install -g json-server `
+
+You will need to open a new terminal, navigate to the folder React/json-server, and start the server on a specific port to avoid conflict with the port we are using for lite-server:
+` json-server --watch db.json -p 3001 -d 2000 `
+Notice we are specifing port 3001 and a delay of 2 seconds (2000 miliseconds) to emulate real case scenario.
+
