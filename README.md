@@ -22,3 +22,6 @@ You will need to open a new terminal, navigate to the folder React/json-server, 
 ` json-server --watch db.json -p 3001 -d 2000 `
 Notice we are specifing port 3001 and a delay of 2 seconds (2000 miliseconds) to emulate real case scenario.
 
+# NodeJS
+Project folder is NodeJS/conFusionServer
+
