@@ -8,7 +8,7 @@ var session = require("express-session");
 var FileStore = require("session-file-store")(session);
 
 var indexRouter = require("./routes/index");
-var usersRouter = require("./routes/users");
+var userRouter = require("./routes/users");
 var dishRouter = require("./routes/dishRouter");
 var promoRouter = require("./routes/promoRouter");
 var leaderRouter = require("./routes/leaderRouter");
@@ -35,7 +35,6 @@ var app = express();
 app.use(passport.initialize());
 
 app.use("/", indexRouter);
-app.use("/users", usersRouter);
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
@@ -48,7 +47,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/", indexRouter);
-app.use("/users", usersRouter);
+app.use("/users", userRouter);
 app.use("/dishes", dishRouter);
 app.use("/leaders", leaderRouter);
 app.use("/promotions", promoRouter);
