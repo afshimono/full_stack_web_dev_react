@@ -3,4 +3,5 @@
 json-server/*
 **/mongodb/data/
 NodeJS/conFusionServer/.env
+**.env
 .DS_Store
