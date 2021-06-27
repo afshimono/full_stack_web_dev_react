@@ -18,27 +18,15 @@ favoriteRouter
     })
     .get(cors.cors,authenticate.verifyUser, (req, res, next) => {
         Favorites.findOne({'user':req.user.id})
+        .populate('user')
+        .populate('dishes')
         .then(
             (favorite) => {
-                if(favorite !== null){
-                    User.findOne({'_id':req.user.id})
-                    .then(
-                        (user) => {
-                            Dishes.find({'_id':{ $in: favorite.dishes}}).then(
-                                (dishes) => {
-                                    var favoriteObj = favorite.toObject();
-                                    favoriteObj.user = user.toObject();
-                                    const newDishList = []
-                                    dishes.forEach(element => newDishList.push(element.toObject()))
-                                    favoriteObj.dishes = newDishList;
-                                    console.log("Favorite found.");
-                                    res.statusCode = 200;
-                                    res.setHeader("Content-Type", "application/json");
-                                    res.json(favoriteObj);
-                                }
-                            )
-                        }
-                    )
+                if(favorite !== null){                 
+                    console.log("Favorite found.");
+                    res.statusCode = 200;
+                    res.setHeader("Content-Type", "application/json");
+                    res.json(favorite);                           
                 }
                 else{
                     console.log("No favorite found.");
@@ -97,20 +85,14 @@ favoriteRouter
         res.end("PUT operation not supported on /favorites");
     })
     .delete(cors.corsWithOptions, authenticate.verifyUser, (req, res, next) => {
-        Favorites.findOne({'user':req.user.id})
+        Favorites.findOneAndRemove({'user':req.user.id})
         .then(
-            (favorite) => {
-                Favorites.deleteOne({_id:favorite._id})
-                .then(
-                    (result) => {
-                        console.log("Deleted all favorites.");
-                        res.statusCode = 200;
-                        res.setHeader("Content-Type", "application/json");
-                        res.json(null);
-                    }
-                );
-            }
-            
+            (result) => {
+                console.log("Deleted all favorites.");
+                res.statusCode = 200;
+                res.setHeader("Content-Type", "application/json");
+                res.json(result);
+            }         
         )
         .catch((err) => next(err));
     });
