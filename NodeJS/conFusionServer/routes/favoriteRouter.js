@@ -16,27 +16,77 @@ favoriteRouter
     .options(cors.corsWithOptions, (req, res) => {
         res.sendStatus(200);
     })
-    .get(cors.cors, (req, res, next) => {
-        Dishes.find({})
-            .populate("comments.author")
-            .then(
-                (dishes) => {
+    .get(cors.cors,authenticate.verifyUser, (req, res, next) => {
+        Favorites.findOne({'user':req.user.id})
+        .then(
+            (favorite) => {
+                if(favorite !== null){
+                    User.findOne({'_id':req.user.id})
+                    .then(
+                        (user) => {
+                            Dishes.find({'_id':{ $in: favorite.dishes}}).then(
+                                (dishes) => {
+                                    var favoriteObj = favorite.toObject();
+                                    favoriteObj.user = user.toObject();
+                                    const newDishList = []
+                                    dishes.forEach(element => newDishList.push(element.toObject()))
+                                    favoriteObj.dishes = newDishList;
+                                    console.log("Favorite found.");
+                                    res.statusCode = 200;
+                                    res.setHeader("Content-Type", "application/json");
+                                    res.json(favoriteObj);
+                                }
+                            )
+                        }
+                    )
+                }
+                else{
+                    console.log("No favorite found.");
                     res.statusCode = 200;
                     res.setHeader("Content-Type", "application/json");
-                    res.json(dishes);
-                },
-                (err) => next(err)
-            )
-            .catch((err) => next(err));
-    })
+                    res.json(null);
+                }
+            }
+        );}
+    )
     .post(cors.corsWithOptions, authenticate.verifyUser, (req, res, next) => {
-        Dishes.create(req.body)
-            .then(
-                (dish) => {
-                    console.log("Dish Created ", dish);
-                    res.statusCode = 200;
-                    res.setHeader("Content-Type", "application/json");
-                    res.json(dish);
+        Favorites.findOne({'user':req.user.id})
+        .then(
+                (favorite) => {
+                    const idObjList = req.body;
+                    const idList = Array.from(idObjList, (idObj) => idObj._id);
+                    Dishes.find({'_id':{ $in: idList}}).then(
+                        (dishes) => {                       
+                            const dishList = []
+                            dishes.forEach(element => dishList.push(element.id));
+                            if(favorite!==null){
+                                favorite.dishes = [...new Set(favorite.dishes.concat(dishList))];
+                                favorite.save()
+                                .then(
+                                    (savedFavorite) => {
+                                        console.log("List of ids inserted.");
+                                        res.statusCode = 200;
+                                        res.setHeader("Content-Type", "application/json");
+                                        res.json(savedFavorite);
+                                });
+                            }
+                            else{
+                                const newFavorite = {
+                                    user:req.user.id,
+                                    dishes:dishList
+                                }
+                                Favorites.create(newFavorite)
+                                .then(
+                                    (savedFavorite) => {
+                                        console.log("List of ids inserted.");
+                                        res.statusCode = 200;
+                                        res.setHeader("Content-Type", "application/json");
+                                        res.json(savedFavorite);
+                                    });
+                            }
+                        }
+                        
+                    );      
                 },
                 (err) => next(err)
             )
