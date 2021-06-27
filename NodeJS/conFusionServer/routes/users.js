@@ -3,7 +3,7 @@ var passport = require("passport");
 var authenticate = require("../authenticate");
 const cors = require("./cors");
 const bodyParser = require("body-parser");
-var User = require("../models/user");
+const {User} = require("../models/user");
 
 const userRouter = express.Router();
 userRouter.use(bodyParser.json());
